@@ -30,7 +30,8 @@
 #define MQTT_TOKEN "" // no need for authentication, for now
 #define MQTT_TOPIC "esp32-test-01joe/evt/status/fmt/json"
 #define MQTT_TOPIC_DISPLAY "esp32-test-01joe/fmt/display"
-#define MQTT_TOPIC_INTERVAL "esp32-test-01joe/fmt/interval"
+#define MQTT_TOPIC_INTERVAL "esp32-test-01joe/fmt/interval" //new topic added for the subscriber 
+                                                            //looking for data from node-red
 // Add WiFi connection information
 char ssid[] = "Mohammed_5G_joe";  // your network SSID (name)
 char pass[] = "Dubai2020";  // your network password
@@ -102,11 +103,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
           Serial.print("seconds()");
           Serial.print(intervaldelay);
           Serial.print("ms)");
+          //The below code was multiplied by 1000 to make the delay equal to 10 at the end
           intervaldelay = newinterval*1000;
 
         }
 
         break;
+        //other deserialization checks that determine if the incoming message is broken, missing or corrupted
       case DeserializationError::EmptyInput:
         Serial.print(F("Deserialization has no inpurt"));
         break;
@@ -139,24 +142,27 @@ void callback(char* topic, byte* payload, unsigned int length) {
       case DeserializationError::Ok:{
         Serial.print(F("Deserialization succeeded"));
         //the json file has been detected correctly and can now have the data extracted
-        //if the new interval value detects the key having the phrase interval
-        // it will update the intervaldelay value as seen below
+        //gets the three color data values coming from the injection node on Node-RED to change the LED color
         int red = jsonIncoming["r"];
         int green = jsonIncoming["g"];
         int blue = jsonIncoming["b"];
-
+        //prints the color values seperately
         Serial.println("Setting LED to Red:");
         Serial.println(red);
         Serial.println("Setting LED to Green:");
         Serial.println(green);
         Serial.println("Setting LED to Blue:");
         Serial.println(blue);
-
+        //sets the new color values gotten from the injection code temporarily
         pixel.setPixelColor(0, red, green, blue);
+        //shows the color values
         pixel.show();
+        //an if statement was added as a way to make the code switch from the temperature measurement led code to
+        //the new node-red injection code
         ledOverriden = true;
         break;
       }
+       //other deserialization checks that determine if the incoming message is broken, missing or corrupted
       case DeserializationError::EmptyInput:
         Serial.print(F("Deserialization has no inpurt"));
         break;
@@ -233,7 +239,7 @@ void loop()
   if (isnan(h) || isnan(t)) {
     Serial.println("Failed to read from DHT sensor!");
   } else {
-    // Set RGB LED Colour based on temp
+    // Set RGB LED Colour based on temp and if the led has not been overriden by the node-red code
     if (!ledOverriden){
     b = (t < ALARM_COLD) ? 255 : ((t < WARN_COLD) ? 150 : 0);
     r = (t >= ALARM_HOT) ? 255 : ((t > WARN_HOT) ? 150 : 0);
