@@ -23,7 +23,7 @@ The checklist below are the topic names that publish data and subscribe to data 
 - #define MQTT_DEVICEID "esp32-test-01joe"
 
 ## Part 1
-Part 1 was completed using the libraries and sketches of the ESP32 and have been added in the part 1 file although they have not been modified they were helpful in understanding the system
+Part 1 was completed using the libraries and sketches of the ESP32 and have been added in the part 1 file although they have not been modified they were helpful in understanding the system. However WiFi scan was not included as its part of the ESP32 sketch library and did not need any modifications to work
 
 ## Part 2 
 Part 2 has the code that combines the ESP32 with the sensors and only publishes data to MQTT for Node-RED to visualize and store
