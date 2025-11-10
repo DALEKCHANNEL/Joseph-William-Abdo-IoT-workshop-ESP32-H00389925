@@ -128,7 +128,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
   else if(strTopic == MQTT_TOPIC_DISPLAY){
-      //determine if the MQTT Interval topic is being detected and runs the code below
+      //determine if the MQTT LED topic is being detected and runs the code below
 
 
     DeserializationError err = deserializeJson(jsonIncoming, payload);
